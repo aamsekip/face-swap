@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI Face Swap modern berbasis Gemini 3 Pro Image Preview." />
+    <title>Gemini AI Face Swap Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-one"></div>
+    <div class="aurora aurora-two"></div>
+
+    <main class="app-shell">
+      <section class="hero glass-card">
+        <div>
+          <p class="eyebrow">Gemini 3 Pro Image Preview</p>
+          <h1>AI Face Swap Studio untuk thumbnail premium.</h1>
+          <p class="hero-copy">
+            Upload thumbnail target dan portrait wajah pengganti, tambahkan instruksi kreatif, lalu hasilkan face swap realistis dengan komposisi, lighting, pose, dan background tetap terjaga.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#studio">Mulai Face Swap</a>
+            <button class="btn btn-ghost" id="copyPromptHero" type="button">Copy Prompt</button>
+          </div>
+        </div>
+        <div class="hero-stat">
+          <span>Realistic</span>
+          <strong>1:1</strong>
+          <small>Target + Portrait → AI Result</small>
+        </div>
+      </section>
+
+      <section id="studio" class="grid-layout">
+        <form class="studio-card glass-card" id="faceSwapForm">
+          <div class="section-heading">
+            <p class="eyebrow">Input</p>
+            <h2>Upload gambar</h2>
+          </div>
+
+          <div class="upload-grid">
+            <label class="drop-zone" data-drop="target">
+              <input type="file" id="targetInput" name="target" accept="image/jpeg,image/png,image/webp" />
+              <span class="drop-icon">🖼️</span>
+              <strong>Target / Thumbnail</strong>
+              <small>JPG, PNG, WEBP • max 8MB</small>
+              <img id="targetPreview" alt="Preview target" hidden />
+            </label>
+
+            <label class="drop-zone portrait-zone" data-drop="portrait">
+              <input type="file" id="portraitInput" name="portrait" accept="image/jpeg,image/png,image/webp" />
+              <span class="drop-icon">🙂</span>
+              <strong>Portrait wajah</strong>
+              <small>Gunakan 1 wajah utama yang jelas</small>
+              <img id="portraitPreview" alt="Preview portrait" hidden />
+            </label>
+          </div>
+
+          <div class="portrait-crop glass-subtle">
+            <div class="crop-frame">
+              <img id="portraitCropPreview" alt="Preview crop portrait" hidden />
+              <span id="cropPlaceholder">Preview crop wajah</span>
+            </div>
+            <p id="faceValidationText">Validasi wajah akan berjalan otomatis di browser jika FaceDetector tersedia.</p>
+          </div>
+
+          <label class="prompt-box">
+            <span>Prompt tambahan</span>
+            <textarea id="promptInput" rows="5" placeholder="Contoh: cinematic lighting, pertahankan ekspresi asli, high quality thumbnail"></textarea>
+          </label>
+
+          <div class="quick-prompts" aria-label="Prompt cepat">
+            <button type="button" data-prompt="buat lebih realistis">Realistis</button>
+            <button type="button" data-prompt="anime style">Anime</button>
+            <button type="button" data-prompt="cinematic lighting">Cinematic</button>
+            <button type="button" data-prompt="high quality thumbnail">Thumbnail HQ</button>
+            <button type="button" data-prompt="pertahankan ekspresi asli">Keep Expression</button>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" id="resetBtn" type="button">Reset Upload</button>
+            <button class="btn btn-primary" id="generateBtn" type="submit">Generate Face Swap</button>
+          </div>
+        </form>
+
+        <aside class="result-card glass-card">
+          <div class="section-heading">
+            <p class="eyebrow">Output</p>
+            <h2>Before / After</h2>
+          </div>
+
+          <div class="compare" id="compareBox">
+            <img id="beforeImage" alt="Before target" />
+            <div class="after-wrap" id="afterWrap">
+              <img id="afterImage" alt="After result" />
+            </div>
+            <input type="range" id="compareSlider" min="0" max="100" value="50" aria-label="Compare before after" />
+            <div class="compare-empty" id="compareEmpty">Hasil AI akan muncul di sini</div>
+          </div>
+
+          <div class="result-actions">
+            <a class="btn btn-primary disabled" id="downloadBtn" download="face-swap-result.png">Download</a>
+            <button class="btn btn-ghost" id="copyPromptBtn" type="button">Copy Prompt</button>
+          </div>
+
+          <div class="prompt-preview glass-subtle">
+            <strong>Prompt final</strong>
+            <p id="finalPromptText">Prompt final akan tampil setelah generate.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="history glass-card">
+        <div class="section-heading inline-heading">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>Hasil generate terbaru</h2>
+          </div>
+          <button class="btn btn-ghost" id="refreshHistory" type="button">Refresh</button>
+        </div>
+        <div class="history-grid" id="historyGrid"></div>
+      </section>
+    </main>
+
+    <div class="loading-overlay" id="loadingOverlay" hidden>
+      <div class="loader-card glass-card">
+        <div class="orb-loader"></div>
+        <h3>AI sedang memproses face swap…</h3>
+        <p>Menjaga pose, komposisi, lighting, dan background target.</p>
+        <div class="progress-track"><span id="progressBar"></span></div>
+        <button class="btn btn-ghost" id="retryBtn" type="button" hidden>Retry Generate</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/scripts/app.js" defer></script>
+  </body>
+</html>

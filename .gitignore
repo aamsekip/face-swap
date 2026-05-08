@@ -1,0 +1,9 @@
+node_modules
+.env
+uploads/tmp/*
+!uploads/tmp/.gitkeep
+uploads/results/*
+!uploads/results/.gitkeep
+data/history.json
+.DS_Store
+npm-debug.log*
